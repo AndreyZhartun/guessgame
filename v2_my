@@ -1,0 +1,20 @@
+:- data_source(words, 
+               csv('https://raw.githubusercontent.com/qeetree/guessgame/master/words2.csv', [])).
+
+guesscycle(_, 0) :-!. 
+guesscycle(Word, Tries) :- NewTries is Tries - 1, 
+    write('Введите слово или \'giveup\' для прекращения игры:'), 
+    read(Something), 
+    (   Something == giveup -> (writeln('Игра завершена'), true);
+		Something == Word -> (writeln('Правильно!'), true); 
+    	write('Неверно, осталось попыток: '), 
+    	writeln(NewTries), 
+    	guesscycle(Word, NewTries)).
+
+guessgame :- 
+    write('Введите номер:'), 
+    read(Num), 
+    data_row(words, words(Num, Word, Desc)), 
+    write('Описание слова: '), 
+    writeln(Desc), 
+    guesscycle(Word, 3).            
